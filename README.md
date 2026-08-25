@@ -2,101 +2,98 @@
 
 Personal 12-week accountability tracker — daily habits, training, and body metrics.
 
-Packaged as a standalone PWA: installs to the iOS home screen and runs fully offline.
+A standalone PWA: installs to the iOS home screen and works fully offline.
+No build step, no dependencies, no network calls at runtime.
 
-## Status
+## Deploying to Netlify
 
-The PWA shell is complete and verified. **The app itself is not in this repo yet** —
-`the-84-v5.html` has never been committed here (the repo contained only this README),
-so the two steps that depend on its contents are still outstanding:
+Drag this folder onto Netlify, or connect the repo — `netlify.toml` sets
+`publish = "."` with no build command. HTTPS comes free, which service workers
+require.
 
-- [ ] Drop in `the-84-v5.html` as `index.html`
-- [ ] Replace the `window.storage` calls with `localStorage` (same keys, same shape)
-
-Everything else below is done.
+To install on iPhone: open the site in **Safari** (Chrome on iOS cannot install
+PWAs), then Share → Add to Home Screen. It launches without browser chrome and
+runs with no connection.
 
 ## Files
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | The app. **Not yet added** — see above. |
+| `index.html` | The whole app — markup, styles, and logic in one file. |
 | `manifest.json` | Web app manifest: name, icons, standalone display, theme colors. |
-| `sw.js` | Service worker: precaches the shell, serves it offline. |
-| `netlify.toml` | Static deploy config + cache headers (`sw.js` must never be edge-cached). |
+| `sw.js` | Service worker: precaches the app, serves it offline. |
+| `fonts.css` + `fonts/` | Self-hosted Inter, Sora, and IBM Plex Mono (latin subsets). |
 | `icons/` | App icons: 32, 180 (apple-touch), 192, 512, and a 512 maskable. |
-| `pwa-head-snippet.html` | The `<head>` block to paste into `index.html`. |
+| `netlify.toml` | Deploy config and cache headers. |
+| `tools/` | Scripts that regenerate the icons and re-fetch the fonts. |
+| `the-84-v4.html` | The original embedded fragment this was built from. Archived, not used at runtime. |
 
-## Adding the app
+## What changed from `the-84-v4.html`
 
-1. Copy `the-84-v5.html` into this folder and rename it to `index.html`.
-2. Paste the contents of `pwa-head-snippet.html` into its `<head>`, just before
-   `</head>`. If the file already has a `<meta name="viewport">` or a favicon
-   `<link>`, amend that tag instead of adding a duplicate — the viewport needs
-   `viewport-fit=cover` so the layout can extend under the iPhone notch.
-3. Swap the storage layer (see below).
-4. Delete `pwa-head-snippet.html` — it is a reference, not a runtime file.
+The source was a fragment — it opened with `<style>` and had no `<html>`, `<head>`,
+or `<body>` — designed to be embedded in a host page that provided `window.storage`.
+Four changes made it standalone. The layout CSS and all app logic are otherwise
+byte-for-byte identical:
 
-## Storage
+1. **Wrapped in a real HTML document**, with the manifest link, the iOS
+   home-screen meta tags, and the service worker registration.
+2. **`window.storage` → `localStorage`**, same key (`the84:state:v1`), same value
+   (the state object as a JSON string). The two calls were `await`ed; `localStorage`
+   is synchronous, so `load()` is no longer `async` and boots as `load();render()`
+   instead of `load().then(render)`.
+3. **Google Fonts `@import` → self-hosted `fonts.css`.** An `@import` from
+   `fonts.googleapis.com` fails with no network, which would have dropped the app to
+   system fonts offline — the one thing that would have visibly broken the design.
+4. **A small standalone stylesheet** in a second `<style>` block: page background,
+   and safe-area insets so content clears the notch and home indicator. The app's own
+   stylesheet is untouched.
 
-The app must read and write `localStorage` directly, keeping the **same key and the
-same value shape** the old `window.storage` calls used, so existing saved data and
-existing JSON backups stay readable. `localStorage` is synchronous and stores strings,
-so values are `JSON.stringify`/`JSON.parse`d at the boundary:
+There is one behavioural addition. Saves are debounced by 400ms, and iOS can suspend
+a home-screen app before that timer fires, silently dropping the last change. The
+pending write is now flushed on `visibilitychange` and `pagehide`. Same key, same
+data — it only guarantees the write lands. If you would rather not have it, delete
+`flush()` and its two listeners in `index.html`.
 
-```js
-// read
-const raw = localStorage.getItem(KEY);
-const state = raw ? JSON.parse(raw) : defaultState;
+## Backup and restore
 
-// write
-localStorage.setItem(KEY, JSON.stringify(state));
-```
+Both buttons work unchanged. **Download backup** writes `the84-backup-YYYY-MM-DD.json`
+containing the same state object that lives in `localStorage`; **Restore backup**
+reads one back. Backups made before this conversion restore fine — the shape did not
+change.
 
-If the old `window.storage` API was promise-based, the call sites lose their `await`;
-that is the only logic change, and it is mechanical.
-
-The JSON backup and restore buttons keep working unchanged — they serialize the same
-object they always did.
-
-> Note: `localStorage` on iOS is per-origin and survives app relaunches, but iOS can
-> evict it for web apps left unused for an extended period. The JSON backup button is
-> the safety net; worth exporting periodically.
+Worth doing periodically: iOS can evict `localStorage` for web apps left unused for
+an extended period, and the JSON file is the only copy that survives that.
 
 ## Offline behaviour
 
-`sw.js` precaches the shell on install, then serves it cache-first and refreshes it in
-the background. Cold launches from the home screen are instant and work with no
-network. A new deploy is picked up on the next launch.
+`sw.js` precaches every file on install, then serves them cache-first and refreshes
+in the background, so home-screen launches are instant and work with no network. A
+new deploy is picked up on the next launch.
 
-**Bump `CACHE_VERSION` in `sw.js` whenever `index.html`, the manifest, or an icon
-changes** — that string is what invalidates the old cache.
+**Bump `CACHE_VERSION` in `sw.js` whenever you change `index.html`, the fonts, the
+manifest, or an icon** — that string is what invalidates the old cache. Forget it and
+users keep the old version.
 
-Clearing the cache only discards the app shell. Habit, training, and metric data lives
+Clearing the cache only discards the app files. Habit, training, and metric data lives
 in `localStorage` and is never touched by the service worker.
-
-## Deploying to Netlify
-
-Drag this folder onto Netlify, or connect the repo — there is no build step
-(`netlify.toml` sets `publish = "."`). HTTPS is required for service workers; Netlify
-provides it by default.
-
-To install on iOS: open the site in **Safari** (Chrome on iOS cannot install PWAs),
-then Share → Add to Home Screen.
 
 ## Local development
 
 Service workers need an HTTP origin — opening `index.html` over `file://` will not
-register one. Any static server works:
+register one, and the app will not go offline. Any static server works:
 
 ```sh
 python3 -m http.server 8000
 ```
 
-Then visit `http://localhost:8000` (`localhost` counts as a secure origin).
+Then open `http://localhost:8000` (`localhost` counts as a secure origin).
 
-## Customizing the icons
+## Regenerating assets
 
-Icons were generated by a script rather than drawn by hand. Colors live at the top of
-`tools/generate-icons.js`; run `node tools/generate-icons.js icons` to regenerate all
-five PNGs. The theme colors in `manifest.json` and in the `theme-color` meta tag are a
-neutral dark (`#0e0f12`) and should be changed to match the app's actual palette.
+```sh
+node tools/generate-icons.js icons   # redraw all five PNGs
+node tools/fetch-fonts.js            # re-download the woff2 subsets
+```
+
+Icon colors are the three constants at the top of `tools/generate-icons.js`, currently
+the app's `--bg`, `--amber`, and `--sky`.

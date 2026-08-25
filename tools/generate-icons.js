@@ -86,9 +86,9 @@ function glyphDistance(x, y, scale, CY) {
 }
 
 // ---- renderer ---------------------------------------------------------------
-const BG = [0x0e, 0x0f, 0x12];
-const FG = [0xf5, 0xf5, 0xf4];
-const ACCENT = [0x4a, 0xde, 0x80];
+const BG = [0x0b, 0x12, 0x1c];      // --bg
+const FG = [0xf5, 0xa5, 0x24];      // --amber, as the h1 renders "84"
+const ACCENT = [0x5b, 0xa8, 0xc7];  // --sky
 
 function render(size, opts = {}) {
   const { maskable = false, transparentOutside = false } = opts;
