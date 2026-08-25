@@ -1,0 +1,37 @@
+# Netlify config for The 84 (static site — no build step).
+[build]
+  publish = "."
+  command = ""
+
+# The service worker must never be served from a stale cache, or users get
+# pinned to an old app shell forever.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+# index.html is revalidated on every load; the service worker is what makes
+# the app fast, so there is nothing to gain from caching the shell at the edge.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Icons are content-stable; let them sit in the edge cache.
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"

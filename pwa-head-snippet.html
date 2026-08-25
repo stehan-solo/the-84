@@ -1,0 +1,36 @@
+<!--
+  Paste this block into the <head> of index.html, just before </head>.
+
+  NOTE: if index.html already has a <meta name="viewport"> or a favicon <link>,
+  amend the existing tag rather than adding a second one. The viewport needs
+  `viewport-fit=cover` so the layout can reach under the iPhone notch and home
+  indicator; nothing else about the layout changes.
+-->
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+<!-- Web app manifest -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0e0f12" />
+
+<!-- iOS home-screen install -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="The 84" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+
+<!-- Browser tab -->
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+
+<script>
+  // Register the service worker. Failure here is non-fatal: the app still runs,
+  // it just will not be available offline.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function (err) {
+        console.warn('Service worker registration failed:', err);
+      });
+    });
+  }
+</script>
