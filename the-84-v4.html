@@ -1,0 +1,508 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#0B121C; --panel:#131E2E; --panel2:#1A2739; --line:#263650;
+  --ink:#E8EEF7; --dim:#7E90A8;
+  --amber:#F5A524; --sky:#5BA8C7; --mint:#4FD1A5; --clay:#E0654F;
+  --r:10px; --gap:12px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+#the84{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;
+  padding:16px 14px 40px;line-height:1.45;overflow-x:hidden;max-width:100%}
+#the84 .wrap{max-width:1180px;margin:0 auto;width:100%}
+
+#the84 .eyebrow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+#the84 h1{font-family:'Sora',system-ui,sans-serif;font-weight:800;
+  font-size:clamp(38px,8vw,66px);line-height:.92;letter-spacing:-.035em;margin:6px 0 2px}
+#the84 h1 span{color:var(--amber)}
+#the84 h2{font-family:'Sora',system-ui,sans-serif;font-weight:600;font-size:13px;
+  letter-spacing:.02em;margin:0 0 10px}
+#the84 h3{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dim);margin:14px 0 4px;font-weight:500}
+#the84 h3:first-child{margin-top:0}
+#the84 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px;min-width:0}
+
+/* ---------- header (rebuilt) ---------- */
+#the84 .head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:18px}
+#the84 .headL{min-width:0}
+#the84 .headR{min-width:0;width:100%;margin-top:12px;
+  border-top:1px solid var(--line);padding-top:12px}
+#the84 .hero{display:flex;align-items:baseline;gap:12px}
+#the84 .streakNum{font-family:'IBM Plex Mono',monospace;font-weight:600;
+  font-size:clamp(42px,9vw,60px);line-height:1;color:var(--amber);flex:none}
+#the84 .streakLbl{font-size:12px;color:var(--dim);min-width:0}
+#the84 .prog{height:3px;background:var(--line);border-radius:2px;margin-top:12px;
+  overflow:hidden;width:100%}
+#the84 .prog i{display:block;height:100%;background:var(--amber);transition:width .3s}
+
+@media (min-width:680px){
+  #the84{padding:24px 22px 56px}
+  #the84 .head{display:flex;justify-content:space-between;align-items:flex-end;gap:28px}
+  #the84 .headL{flex:1 1 auto}
+  #the84 .headR{flex:0 0 250px;max-width:250px;margin-top:0;border-top:none;padding-top:0}
+  #the84 .hero{flex-direction:column;align-items:flex-end;gap:2px;text-align:right}
+  #the84 .streakLbl{text-align:right}
+}
+@media (min-width:900px){
+  #the84 .cols.main{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}
+  #the84 .cols.rest{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:1240px){#the84 .cols.rest{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+#the84 .cols{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);align-items:start}
+#the84 .cols + .cols{margin-top:var(--gap)}
+
+#the84 .nav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+#the84 .nav button{background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+  border-radius:8px;width:34px;height:34px;font-size:15px;cursor:pointer;
+  font-family:'IBM Plex Mono',monospace;flex:none}
+#the84 .nav button:disabled{opacity:.3;cursor:default}
+#the84 .navLbl{flex:1;text-align:center;min-width:0}
+#the84 .navLbl b{font-family:'Sora',sans-serif;font-size:14px;display:block}
+#the84 .navLbl i{font-style:normal;font-size:11px;color:var(--dim);font-family:'IBM Plex Mono',monospace}
+
+#the84 .train{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:var(--panel2);border-left:3px solid var(--sky);border-radius:6px;
+  padding:9px 11px;margin-bottom:12px;flex-wrap:wrap}
+#the84 .train b{font-family:'Sora',sans-serif;font-size:13px;font-weight:600}
+#the84 .train i{font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--sky)}
+
+#the84 .chk{display:flex;align-items:center;gap:11px;padding:9px 0;
+  border-bottom:1px solid var(--line);cursor:pointer}
+#the84 .chk:last-child{border-bottom:none}
+#the84 .box{flex:none;width:21px;height:21px;border-radius:5px;border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+  color:var(--bg);transition:.14s}
+#the84 .chk.on .box{background:var(--amber);border-color:var(--amber)}
+#the84 .chk.shared .box{border-color:rgba(79,209,165,.5)}
+#the84 .chk.shared.on .box{background:var(--mint);border-color:var(--mint)}
+#the84 .chkTxt{flex:1;font-size:13px;min-width:0}
+#the84 .chk.on .chkTxt{color:var(--dim)}
+#the84 .chkTxt em{font-style:normal;display:block;font-size:10.5px;color:var(--dim);
+  font-family:'IBM Plex Mono',monospace;margin-top:1px}
+#the84 .chk.shared .chkTxt em{color:var(--mint);opacity:.75}
+#the84 .chk:focus-visible{outline:2px solid var(--sky);outline-offset:2px;border-radius:4px}
+#the84 .tally{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);
+  text-align:right;margin-top:10px}
+#the84 .tally b{color:var(--amber)}
+
+#the84 .gridBox{max-width:340px;margin:0 auto}
+#the84 .grid{display:grid;grid-template-columns:20px repeat(7,minmax(0,1fr));gap:4px;align-items:center}
+#the84 .gh{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--dim);text-align:center}
+#the84 .gwk{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--dim);
+  text-align:right;padding-right:2px}
+#the84 .cell{aspect-ratio:1;border-radius:4px;background:var(--panel2);
+  border:1px solid var(--line);cursor:pointer;position:relative}
+#the84 .cell.d1{background:rgba(245,165,36,.16)}
+#the84 .cell.d2{background:rgba(245,165,36,.38)}
+#the84 .cell.d3{background:rgba(245,165,36,.66)}
+#the84 .cell.d4{background:var(--amber);border-color:var(--amber)}
+#the84 .cell.today{box-shadow:0 0 0 2px var(--sky)}
+#the84 .cell.future{opacity:.4;cursor:default}
+#the84 .cell.test{border-style:dashed;border-color:rgba(91,168,199,.7)}
+#the84 .cell:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+#the84 .legend{display:flex;align-items:center;gap:5px;margin-top:12px;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--dim);flex-wrap:wrap}
+#the84 .lk{width:11px;height:11px;border-radius:3px;border:1px solid var(--line);flex:none}
+
+#the84 .rung{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+#the84 .rung:last-of-type{border-bottom:none}
+#the84 .rungN{flex:none;width:46px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dim)}
+#the84 .rung.cur .rungN{color:var(--amber);font-weight:600}
+#the84 .rung.done .rungN{color:var(--mint)}
+#the84 .pips{display:flex;gap:4px;flex:1}
+#the84 .pip{width:9px;height:9px;border-radius:50%;border:1px solid var(--line);flex:none}
+#the84 .pip.on{background:var(--mint);border-color:var(--mint)}
+#the84 .rungS{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim);flex:none}
+
+#the84 .btnrow{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+#the84 .btn{flex:1 1 96px;padding:10px;border-radius:8px;border:1px solid var(--line);
+  background:var(--panel2);color:var(--ink);font-size:12px;font-weight:500;cursor:pointer;
+  font-family:'Inter',sans-serif}
+#the84 .btn.good{border-color:rgba(79,209,165,.45);color:var(--mint)}
+#the84 .btn.bad{border-color:rgba(224,101,79,.4);color:var(--clay)}
+#the84 .btn.on{background:var(--amber);color:var(--bg);border-color:var(--amber);font-weight:600}
+#the84 .btn.sm{flex:0 0 auto;padding:6px 12px;font-size:11px;font-family:'IBM Plex Mono',monospace}
+#the84 .btn:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+
+#the84 .mrow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+#the84 .mrow:last-of-type{border-bottom:none}
+#the84 .mlbl{flex:1;font-size:12.5px;min-width:0}
+#the84 .mlbl em{font-style:normal;display:block;font-size:10px;color:var(--dim);
+  font-family:'IBM Plex Mono',monospace}
+#the84 input[type=number],#the84 input[type=text],#the84 input[type=date]{
+  background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+  border-radius:6px;padding:7px 8px;font-size:13px;
+  font-family:'IBM Plex Mono',monospace;text-align:right;width:78px;flex:none}
+#the84 input[type=date]{width:auto;text-align:left;font-size:12px}
+#the84 input:focus-visible{outline:2px solid var(--sky);outline-offset:1px}
+#the84 .base{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim);
+  width:56px;text-align:right;flex:none}
+#the84 .delta{font-family:'IBM Plex Mono',monospace;font-size:10.5px;width:50px;
+  text-align:right;flex:none}
+#the84 .up{color:var(--mint)} #the84 .dn{color:var(--clay)}
+
+#the84 .calc{background:var(--panel2);border-radius:6px;padding:10px 11px;margin-top:12px;
+  border-left:3px solid var(--amber)}
+#the84 .calcRow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);padding:2px 0}
+#the84 .calcRow b{color:var(--ink);font-size:14px;font-weight:600;white-space:nowrap}
+#the84 .calcRow b.amb{color:var(--amber)}
+
+#the84 .blocks{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+#the84 .note{font-size:11.5px;color:var(--dim);margin-top:10px;line-height:1.5}
+#the84 .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+  background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+  padding:9px 15px;border-radius:20px;font-size:12px;z-index:99;opacity:0;
+  transition:.25s;pointer-events:none}
+#the84 .toast.show{opacity:1}
+#the84 .foot{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9.5px;
+  color:var(--dim);letter-spacing:.1em;margin-top:24px}
+@media (prefers-reduced-motion:reduce){#the84 *{transition:none!important}}
+</style>
+
+<div id="the84"><div class="wrap">
+
+  <div class="head">
+    <div class="headL">
+      <div class="eyebrow">12-week year · physical + presence</div>
+      <h1>THE<span>84</span></h1>
+      <div class="eyebrow" id="subhead">Loading…</div>
+    </div>
+    <div class="headR">
+      <div class="hero">
+        <div class="streakNum" id="streak">0</div>
+        <div class="streakLbl">consecutive days the whole day held. This is the number. Not the weight.</div>
+      </div>
+      <div class="prog"><i id="progBar" style="width:0%"></i></div>
+    </div>
+  </div>
+
+  <div class="cols main">
+    <div class="panel">
+      <div class="nav">
+        <button id="prev" aria-label="Previous day">‹</button>
+        <div class="navLbl"><b id="dayName">—</b><i id="dayMeta">—</i></div>
+        <button id="next" aria-label="Next day">›</button>
+      </div>
+      <div class="train"><div><b id="trainWhat">—</b></div><i id="trainWhen">—</i></div>
+      <div id="checks"></div>
+      <div class="tally" id="tally"></div>
+    </div>
+
+    <div class="panel">
+      <h2>The 84</h2>
+      <div class="gridBox">
+        <div class="grid" id="grid"></div>
+        <div class="legend">
+          <span>empty</span><span class="lk"></span>
+          <span class="lk" style="background:rgba(245,165,36,.16)"></span>
+          <span class="lk" style="background:rgba(245,165,36,.38)"></span>
+          <span class="lk" style="background:rgba(245,165,36,.66)"></span>
+          <span class="lk" style="background:#F5A524;border-color:#F5A524"></span>
+          <span>full</span>
+          <span style="margin-left:4px">· dashed = test day</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols rest">
+    <div class="panel" style="grid-column:1/-1">
+      <h2>The markers — 4-week retest</h2>
+      <div class="blocks" id="blocks"></div>
+      <div id="metrics"></div>
+      <div class="calc" id="calc"></div>
+      <div class="note" id="testNote"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Jo's ladder</h2>
+      <div id="ladder"></div>
+      <div class="btnrow">
+        <button class="btn good" id="joGood">Settled on his own</button>
+        <button class="btn bad" id="joBad">Needed more</button>
+      </div>
+      <div class="note" id="joNote"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Janie's read — weekly</h2>
+      <div class="note" style="margin:0 0 10px">Did the agreed routines hold this week? Her score, not yours. Ask on Sunday.</div>
+      <div class="btnrow" id="janie"></div>
+      <div class="note" id="janieNote"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Setup &amp; backup</h2>
+      <div class="mrow"><div class="mlbl">Day 1 of the 84<em>re-maps the grid</em></div>
+        <input type="date" id="startDate"></div>
+      <div class="mrow"><div class="mlbl">Height<em>cm — used for body fat</em></div>
+        <input type="text" inputmode="decimal" id="height"></div>
+      <div class="btnrow">
+        <button class="btn" id="exp">Download backup</button>
+        <button class="btn" id="impBtn">Restore backup</button>
+      </div>
+      <input type="file" id="imp" accept="application/json" style="display:none">
+      <div class="note">Backup writes a JSON file you keep. Restore overwrites everything stored.</div>
+    </div>
+  </div>
+
+  <div class="foot">GEORGE · WESTERN CAPE · 05:30</div>
+  <div class="toast" id="toast"></div>
+</div></div>
+
+<script>
+(function(){
+const KEY='the84:state:v1';
+const $=id=>document.getElementById(id);
+
+const PLAN={
+  1:{t:'Lift — legs priority',w:'05:45–06:45',q:'07:15',s:'17:00',n:'Pickup 14:30'},
+  2:{t:'Run — 4×4 intervals',w:'05:45–06:50',q:'07:50',s:'15:15',n:'School run 07:15 · leave 15:40'},
+  3:{t:'Lift — legs priority',w:'05:45–06:45',q:'07:15',s:'17:00',n:'Art class 14:00 · pickup covered'},
+  4:{t:'Run — easy Zone 2',w:'05:45–06:50',q:'07:50',s:'15:15',n:'School run 07:15 · leave 15:40'},
+  5:{t:'Lift — legs priority',w:'05:45–06:45',q:'07:15',s:'17:00',n:''},
+  6:{t:'Parkrun — hard',w:'08:00',q:'flexible',s:'—',n:''},
+  0:{t:'Mobility + walk',w:'post-church',q:'flexible',s:'—',n:'Church 10:00'}
+};
+const DN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+const BODY=[
+  {k:'weight',l:'Weight',u:'kg',good:'down'},
+  {k:'waist',l:'Waist at navel',u:'cm',good:'down'},
+  {k:'neck',l:'Neck',u:'cm',good:'none'}
+];
+const STRENGTH=[
+  {k:'push',l:'Push-ups to failure',u:'reps',good:'up'},
+  {k:'hang',l:'Dead hang',u:'sec',good:'up'},
+  {k:'squat60',l:'Squats in 60 sec',u:'reps',good:'up'},
+  {k:'plank',l:'Plank to failure',u:'sec',good:'up'}
+];
+const CARDIO=[
+  {k:'rhr',l:'Resting heart rate',u:'bpm',good:'down'},
+  {k:'hrr',l:'HR recovery — 60s drop',u:'bpm',good:'up'},
+  {k:'energy',l:'Energy — 4-week average',u:'/10',good:'up'}
+];
+const RUNGS=[10,15,20,30,45], NIGHTS=5;
+const OFFSETS=[0,28,56,83];               // final test lands on day 84, inside the grid
+const LABELS=['Baseline','Wk 5','Wk 9','Wk 12'];
+const SEED={b1:{date:'2026-08-24',weight:81,waist:91.4,neck:40.6,push:25,hang:75,squat60:43,plank:120}};
+
+let S={start:'2026-08-24',height:183,days:{},jo:{rung:0,nights:0,log:{}},janie:{},tests:null};
+let cur=iso(new Date()), blk=null;
+
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function parse(s){const p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function addDays(s,n){const d=parse(s);d.setDate(d.getDate()+n);return iso(d)}
+function dayIndex(s){return Math.round((parse(s)-parse(S.start))/86400000)}
+function testDay(n){return addDays(S.start,OFFSETS[n-1])}
+function num(v){                            // accepts 91,4 and 91.4
+  if(v===''||v==null)return null;
+  const n=parseFloat(String(v).replace(',','.'));
+  return isNaN(n)?null:n;
+}
+
+function bodyFat(t){
+  if(!t||t.waist==null||t.neck==null||!S.height)return null;
+  const d=t.waist-t.neck; if(d<=0)return null;
+  const v=495/(1.0324-0.19077*Math.log10(d)+0.15456*Math.log10(S.height))-450;
+  return (v>0&&v<60)?v:null;
+}
+
+function checksFor(d){
+  const dow=parse(d).getDay(),p=PLAN[dow],wk=dow>=1&&dow<=5;
+  const c=[{k:'rise',t:'Up at 05:30',s:'no snooze'},{k:'train',t:p.t,s:p.w},
+           {k:'quiet',t:'Quiet time · Bible · planning',s:wk?'from '+p.q:'flexible'}];
+  if(wk){c.push({k:'deep',t:'08:00–09:30 deep work held',s:'no meetings booked in'});
+         c.push({k:'shut',t:'Work shut down by '+p.s,s:'tomorrow planned, laptop closed'})}
+  c.push({k:'present',t:'17:00–20:00 fully present',s:'homework · dinner · wrestling · prayer'});
+  c.push({k:'jo',t:"Jo's routine held exactly as agreed",s:'shared routine — no improvising',shared:true});
+  c.push({k:'lights',t:'Lights out 21:30',s:'after wind-down with Janie'});
+  return c;
+}
+
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1900)}
+
+async function load(){
+  try{const r=await window.storage.get(KEY);if(r&&r.value)S=Object.assign(S,JSON.parse(r.value))}catch(e){}
+  if(!S.tests||!S.tests.b1){S.tests=Object.assign({},SEED,S.tests||{});save()}
+}
+let tmr;
+function save(){clearTimeout(tmr);tmr=setTimeout(async()=>{
+  try{const r=await window.storage.set(KEY,JSON.stringify(S));if(!r)toast('Could not save')}
+  catch(e){toast('Could not save — this session only')}},400)}
+
+function dayScore(d){const c=checksFor(d),r=S.days[d]||{};let n=0;
+  c.forEach(x=>{if(r[x.k])n++});return{n:n,of:c.length}}
+function streak(){let n=0,d=iso(new Date());
+  if(dayScore(d).n<dayScore(d).of)d=addDays(d,-1);
+  for(;;){const s=dayScore(d);if(s.n>0&&s.n===s.of){n++;d=addDays(d,-1)}else break}return n}
+
+function metricRows(host,list,b,base){
+  list.forEach(x=>{
+    const row=document.createElement('div');row.className='mrow';
+    const bv=base?base[x.k]:null, v=b?b[x.k]:null;
+    let dl='',cl='';
+    if(bv!=null&&v!=null&&blk>1&&x.good!=='none'){
+      const d=Math.round((v-bv)*10)/10;
+      if(d!==0){dl=(d>0?'+':'')+d;cl=((d>0)===(x.good==='up'))?'up':'dn'}
+    }
+    row.innerHTML='<div class="mlbl">'+x.l+'<em>'+x.u+'</em></div>'+
+      '<div class="base">'+(blk>1&&bv!=null?'wk1 '+bv:'')+'</div>'+
+      '<div class="delta '+cl+'">'+dl+'</div>';
+    const inp=document.createElement('input');
+    inp.type='text';inp.inputMode='decimal';
+    inp.setAttribute('aria-label',x.l);inp.value=v!=null?v:'';inp.placeholder='—';
+    inp.onchange=()=>{
+      S.tests['b'+blk]=S.tests['b'+blk]||{date:testDay(blk)};
+      S.tests['b'+blk][x.k]=num(inp.value);
+      save();render()};
+    row.appendChild(inp);host.appendChild(row);
+  });
+}
+
+function render(){
+  const idx=dayIndex(cur),wk=Math.max(1,Math.floor(idx/7)+1);
+  const todayIdx=dayIndex(iso(new Date()));
+  if(blk===null)blk=Math.min(4,Math.max(1,Math.floor(todayIdx/28)+1));
+
+  $('subhead').textContent = idx<0?'Starts '+S.start
+    : idx>83?'Complete':'Week '+wk+' of 12 · day '+(idx+1)+' of 84';
+  $('streak').textContent=streak();
+  const done=Object.keys(S.days).filter(d=>{const s=dayScore(d);return s.n>0&&s.n===s.of}).length;
+  $('progBar').style.width=Math.min(100,done/84*100)+'%';
+
+  const dow=parse(cur).getDay(),p=PLAN[dow];
+  $('dayName').textContent=DN[dow];
+  $('dayMeta').textContent=cur+(p.n?' · '+p.n:'');
+  $('trainWhat').textContent=p.t;$('trainWhen').textContent=p.w;
+  $('next').disabled = cur>=iso(new Date());
+
+  const rec=S.days[cur]||{},box=$('checks');box.innerHTML='';
+  checksFor(cur).forEach(c=>{
+    const el=document.createElement('div');
+    el.className='chk'+(rec[c.k]?' on':'')+(c.shared?' shared':'');
+    el.tabIndex=0;el.setAttribute('role','checkbox');
+    el.setAttribute('aria-checked',rec[c.k]?'true':'false');
+    el.innerHTML='<div class="box">'+(rec[c.k]?'✓':'')+'</div><div class="chkTxt">'+c.t+'<em>'+c.s+'</em></div>';
+    const go=()=>{S.days[cur]=S.days[cur]||{};S.days[cur][c.k]=!S.days[cur][c.k];save();render()};
+    el.onclick=go;el.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();go()}};
+    box.appendChild(el);
+  });
+  const sc=dayScore(cur);$('tally').innerHTML='<b>'+sc.n+'</b> / '+sc.of+' held';
+
+  const g=$('grid');g.innerHTML='';
+  g.appendChild(Object.assign(document.createElement('div'),{className:'gh'}));
+  ['M','T','W','T','F','S','S'].forEach(x=>{const e=document.createElement('div');
+    e.className='gh';e.textContent=x;g.appendChild(e)});
+  const today=iso(new Date());
+  const testDays=[1,2,3,4].map(testDay);
+  for(let w=0;w<12;w++){
+    const l=document.createElement('div');l.className='gwk';l.textContent=w+1;g.appendChild(l);
+    for(let i=0;i<7;i++){
+      const d=addDays(S.start,w*7+i),c=document.createElement('div'),s=dayScore(d);
+      const lvl=s.n===0?0:s.n===s.of?4:s.n>=s.of-2?3:s.n>=Math.ceil(s.of/2)?2:1;
+      c.className='cell'+(lvl?' d'+lvl:'')+(d===today?' today':'')+(d>today?' future':'')+
+        (testDays.indexOf(d)>-1?' test':'');
+      c.title=d+' — '+s.n+'/'+s.of+(testDays.indexOf(d)>-1?' · test day':'');
+      if(d<=today){c.tabIndex=0;
+        const go=()=>{cur=d;render();window.scrollTo({top:0,behavior:'smooth'})};
+        c.onclick=go;c.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}}
+      g.appendChild(c);
+    }
+  }
+
+  const bb=$('blocks');bb.innerHTML='';
+  [1,2,3,4].forEach(n=>{
+    const b=document.createElement('button');
+    b.className='btn sm'+(blk===n?' on':'');b.textContent=LABELS[n-1];
+    b.onclick=()=>{blk=n;render()};bb.appendChild(b);
+  });
+  const base=S.tests.b1||{}, B=S.tests['b'+blk]||{};
+  const m=$('metrics');m.innerHTML='';
+  const hA=document.createElement('h3');hA.textContent='Body';m.appendChild(hA);
+  metricRows(m,BODY,B,base);
+  const hB=document.createElement('h3');hB.textContent='Strength';m.appendChild(hB);
+  metricRows(m,STRENGTH,B,base);
+  const hC=document.createElement('h3');hC.textContent='Cardio & energy';m.appendChild(hC);
+  metricRows(m,CARDIO,B,base);
+
+  const bf=bodyFat(B), bf0=bodyFat(base), c=$('calc');
+  if(bf!=null&&B.weight!=null){
+    const fat=B.weight*bf/100, lean=B.weight-fat;
+    let d='';
+    if(bf0!=null&&blk>1){const dd=Math.round((bf-bf0)*10)/10;
+      if(dd!==0)d=' <span class="'+(dd<0?'up':'dn')+'">'+(dd>0?'+':'')+dd+'</span>'}
+    c.innerHTML='<div class="calcRow"><span>Body fat — Navy estimate</span><b class="amb">'+bf.toFixed(1)+'%'+d+'</b></div>'+
+      '<div class="calcRow"><span>Fat mass</span><b>'+fat.toFixed(1)+' kg</b></div>'+
+      '<div class="calcRow"><span>Lean mass</span><b>'+lean.toFixed(1)+' kg</b></div>'+
+      '<div class="calcRow"><span>Waist-to-height</span><b>'+(B.waist/S.height).toFixed(3)+'</b></div>';
+  } else c.innerHTML='<div class="calcRow"><span>Enter weight, waist and neck for body fat</span></div>';
+
+  const nextT=testDays.filter(d=>d>today)[0];
+  $('testNote').textContent='Retest every 4 weeks, same morning, before food, cold. '+
+    (nextT?'Next test day: '+nextT+'.':'All four test days are behind you.')+
+    ' Deltas compare against the baseline, not the previous block.';
+
+  const L=$('ladder');L.innerHTML='';
+  RUNGS.forEach((mm,i)=>{
+    const el=document.createElement('div');
+    el.className='rung'+(i===S.jo.rung?' cur':'')+(i<S.jo.rung?' done':'');
+    let pips='';for(let k=0;k<NIGHTS;k++){const on=i<S.jo.rung||(i===S.jo.rung&&k<S.jo.nights);
+      pips+='<span class="pip'+(on?' on':'')+'"></span>'}
+    el.innerHTML='<div class="rungN">'+mm+' min</div><div class="pips">'+pips+'</div>'+
+      '<div class="rungS">'+(i<S.jo.rung?'cleared':i===S.jo.rung?S.jo.nights+'/'+NIGHTS:'')+'</div>';
+    L.appendChild(el);
+  });
+  $('joNote').textContent = S.jo.rung>=RUNGS.length
+    ? 'Ladder complete. He goes down on his own. You sleep in your own bed.'
+    : 'Check in every '+RUNGS[S.jo.rung]+' minutes tonight. '+NIGHTS+' settled nights clears the rung. A rough night holds the rung — it never sends you backwards.';
+
+  const jw='w'+wk,jv=S.janie[jw]||0,jb=$('janie');jb.innerHTML='';
+  [['Held',5],['Mostly',4],['Patchy',2],['Loose',1]].forEach(([l,v])=>{
+    const b=document.createElement('button');b.className='btn'+(jv===v?' on':'');b.textContent=l;
+    b.onclick=()=>{S.janie[jw]=(jv===v?0:v);save();render()};jb.appendChild(b)});
+  const s2=Object.values(S.janie).filter(x=>x>0);
+  $('janieNote').textContent = s2.length
+    ? 'Weeks scored: '+s2.length+' · average '+(s2.reduce((a,b)=>a+b,0)/s2.length).toFixed(1)+'/5'
+    : 'Not scored yet for week '+wk+'.';
+
+  $('startDate').value=S.start;
+  $('height').value=S.height||'';
+}
+
+$('prev').onclick=()=>{cur=addDays(cur,-1);render()};
+$('next').onclick=()=>{if(cur<iso(new Date())){cur=addDays(cur,1);render()}};
+$('joGood').onclick=()=>{
+  if(S.jo.rung>=RUNGS.length)return;
+  S.jo.nights++;S.jo.log[cur]=1;
+  if(S.jo.nights>=NIGHTS){S.jo.rung++;S.jo.nights=0;
+    toast(S.jo.rung>=RUNGS.length?'Ladder complete.':'Rung cleared — now '+RUNGS[S.jo.rung]+' min')}
+  else toast('Logged. '+(NIGHTS-S.jo.nights)+' to clear the rung');
+  save();render()};
+$('joBad').onclick=()=>{S.jo.log[cur]=0;toast('Logged. Same rung tomorrow — no penalty.');save();render()};
+$('startDate').onchange=e=>{S.start=e.target.value;save();render()};
+$('height').onchange=e=>{S.height=num(e.target.value);save();render()};
+
+$('exp').onclick=()=>{
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='the84-backup-'+iso(new Date())+'.json';a.click();
+  URL.revokeObjectURL(a.href);toast('Backup downloaded')};
+$('impBtn').onclick=()=>$('imp').click();
+$('imp').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{S=Object.assign(S,JSON.parse(r.result));save();render();toast('Backup restored')}
+    catch(err){toast('That file could not be read')}};
+  r.readAsText(f);e.target.value=''};
+
+load().then(render);
+})();
+</script>
