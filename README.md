@@ -26,9 +26,10 @@ runs with no connection.
 | `icons/` | App icons: 32, 180 (apple-touch), 192, 512, and a 512 maskable. |
 | `netlify.toml` | Deploy config and cache headers. |
 | `tools/` | Scripts that regenerate the icons and re-fetch the fonts. |
-| `the-84-v4.html` | The original embedded fragment this was built from. Archived, not used at runtime. |
+| `the-84-v5.html` | The original embedded fragment this was built from. Archived, not used at runtime. |
+| `the-84-v4.html` | The previous version, as committed to `main`. Archived. |
 
-## What changed from `the-84-v4.html`
+## What changed from `the-84-v5.html`
 
 The source was a fragment — it opened with `<style>` and had no `<html>`, `<head>`,
 or `<body>` — designed to be embedded in a host page that provided `window.storage`.
@@ -40,7 +41,9 @@ byte-for-byte identical:
 2. **`window.storage` → `localStorage`**, same key (`the84:state:v1`), same value
    (the state object as a JSON string). The two calls were `await`ed; `localStorage`
    is synchronous, so `load()` is no longer `async` and boots as `load();render()`
-   instead of `load().then(render)`.
+   instead of `load().then(render)`. `setItem` returns nothing and throws on failure,
+   so the old `if(!r)` branch folds into the `catch`; both `stamp()` paths and the
+   footer's SAVED / NOT SAVED readout behave as before.
 3. **Google Fonts `@import` → self-hosted `fonts.css`.** An `@import` from
    `fonts.googleapis.com` fails with no network, which would have dropped the app to
    system fonts offline — the one thing that would have visibly broken the design.
@@ -49,10 +52,12 @@ byte-for-byte identical:
    stylesheet is untouched.
 
 There is one behavioural addition. Saves are debounced by 400ms, and iOS can suspend
-a home-screen app before that timer fires, silently dropping the last change. The
-pending write is now flushed on `visibilitychange` and `pagehide`. Same key, same
-data — it only guarantees the write lands. If you would rather not have it, delete
-`flush()` and its two listeners in `index.html`.
+a home-screen app before that timer fires, silently dropping the last change — a
+checkbox ticked on the way out of the app. The pending write is now flushed on
+`visibilitychange` and `pagehide`. Same key, same data; it only guarantees the write
+lands. The flush writes quietly (no toast on a page that is going away), but still
+stamps the footer. If you would rather not have it, delete `flush()` and its two
+listeners in `index.html`.
 
 ## Backup and restore
 
