@@ -14,7 +14,7 @@
  * Bump CACHE_VERSION whenever any precached file changes.
  */
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `the-84-${CACHE_VERSION}`;
 
 // Paths are relative so the app works from any deploy path (root or subfolder).

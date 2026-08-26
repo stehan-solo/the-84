@@ -228,6 +228,20 @@
 #the84 .toast.show{opacity:1}
 #the84 .foot{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9.5px;
   color:var(--dim);letter-spacing:.1em;margin-top:24px}
+/* per-day session override */
+#the84 [hidden]{display:none}
+#the84 .train[role=button]{cursor:pointer}
+#the84 .train[role=button]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+#the84 .chg{font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--amber);
+  border:1px solid var(--amber);border-radius:4px;padding:1px 5px;margin-left:8px;
+  white-space:nowrap}
+#the84 .sessEdit{background:var(--panel2);border:1px solid var(--line);
+  border-radius:6px;padding:11px;margin:0 0 12px}
+#the84 .sessEdit label{display:block;font-family:'IBM Plex Mono',monospace;
+  font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:0 0 3px}
+#the84 .sessEdit label+input{width:100%;text-align:left;margin-bottom:9px}
+#the84 .sessEdit .btnrow{margin-top:2px}
 @media (prefers-reduced-motion:reduce){#the84 *{transition:none!important}}
 </style>
 <style>
@@ -270,7 +284,18 @@ body{
         <div class="navLbl"><b id="dayName">—</b><i id="dayMeta">—</i></div>
         <button id="next" aria-label="Next day">›</button>
       </div>
-      <div class="train"><div><b id="trainWhat">—</b></div><i id="trainWhen">—</i></div>
+      <div class="train" id="trainBar" role="button" tabindex="0" aria-expanded="false"><div><b id="trainWhat">—</b><em class="chg" id="trainFlag" hidden>changed</em></div><i id="trainWhen">—</i></div>
+      <div class="sessEdit" id="sessEdit" hidden>
+        <label for="sessName">Session — this day only</label>
+        <input type="text" id="sessName" placeholder="What you actually did">
+        <label for="sessTime">Time</label>
+        <input type="text" id="sessTime" placeholder="e.g. 05:45–06:45">
+        <div class="btnrow">
+          <button class="btn sm" id="sessSave">Save</button>
+          <button class="btn sm" id="sessReset">Reset to pattern</button>
+          <button class="btn sm" id="sessCancel">Cancel</button>
+        </div>
+      </div>
       <div id="checks"></div>
       <div class="tally" id="tally"></div>
 
@@ -368,11 +393,11 @@ const KEY='the84:state:v1';
 const $=id=>document.getElementById(id);
 
 const PLAN={
-  1:{t:'Lift — legs priority',w:'05:45–06:45',q:'07:15',s:'17:00',n:'Pickup 14:30'},
-  2:{t:'Run — 4×4 intervals',w:'05:45–06:50',q:'07:50',s:'15:15',n:'School run 07:15 · leave 15:40'},
-  3:{t:'Lift — legs priority',w:'05:45–06:45',q:'07:15',s:'17:00',n:'Art class 14:00 · pickup covered'},
-  4:{t:'Run — easy Zone 2',w:'05:45–06:50',q:'07:50',s:'15:15',n:'School run 07:15 · leave 15:40'},
-  5:{t:'Lift — legs priority',w:'05:45–06:45',q:'07:15',s:'17:00',n:''},
+  1:{t:'Run — social 5K',w:'17:00–18:00',q:'07:15',s:'17:00',n:'Pickup 14:30'},
+  2:{t:'Lift — legs priority',w:'05:45–06:45',q:'07:50',s:'15:15',n:'School run 07:15 · leave 15:40'},
+  3:{t:'Run — 4×4 intervals',w:'05:45–06:50',q:'07:15',s:'17:00',n:'Art class 14:00 · pickup covered'},
+  4:{t:'Lift — legs priority',w:'05:45–06:45',q:'07:50',s:'15:15',n:'School run 07:15 · leave 15:40'},
+  5:{t:'Lift — upper body',w:'05:45–06:45',q:'07:15',s:'17:00',n:''},
   6:{t:'Parkrun — hard',w:'08:00',q:'flexible',s:'—',n:''},
   0:{t:'Mobility + walk',w:'post-church',q:'flexible',s:'—',n:'Church 10:00'}
 };
@@ -402,6 +427,7 @@ const SEED={b1:{date:'2026-08-24',weight:81,waist:91.4,neck:40.6,push:25,hang:75
 let S={start:'2026-08-24',height:183,days:{},jo:{rung:0,nights:0,log:{}},janie:{},
        tests:null,goals:[{},{},{}]};
 let cur=iso(new Date()), blk=null;
+let editing=null;
 
 function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function parse(s){const p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
@@ -418,13 +444,22 @@ function bodyFat(t){
   return (v>0&&v<60)?v:null;
 }
 
+// The session for one day: an override stored on the day wins over PLAN,
+// field by field, so changing only the name keeps the pattern's time.
+function session(d){
+  const p=PLAN[parse(d).getDay()],o=(S.days[d]||{}).session;
+  return {t:o&&o.t?o.t:p.t, w:o&&o.w?o.w:p.w, over:!!(o&&(o.t||o.w))};
+}
+
 function checksFor(d){
-  const dow=parse(d).getDay(),p=PLAN[dow],wk=dow>=1&&dow<=5;
-  const c=[{k:'rise',t:'Up at 05:30',s:'no snooze'},{k:'train',t:p.t,s:p.w},
+  const dow=parse(d).getDay(),p=PLAN[dow],wk=dow>=1&&dow<=5,ss=session(d);
+  const c=[{k:'rise',t:'Up at 05:30',s:'no snooze'},{k:'train',t:ss.t,s:ss.w},
            {k:'quiet',t:'Quiet time · Bible · planning',s:wk?'from '+p.q:'flexible'}];
   if(wk){c.push({k:'deep',t:'08:00–09:30 deep work held',s:'no meetings booked in'});
          c.push({k:'shut',t:'Work shut down by '+p.s,s:'tomorrow planned, laptop closed'})}
-  c.push({k:'present',t:'17:00–20:00 fully present',s:'homework · dinner · wrestling · prayer'});
+  c.push(dow===1
+    ?{k:'present',t:'18:00–20:00 fully present',s:'dinner · wrestling · prayer — Janie has homework'}
+    :{k:'present',t:'17:00–20:00 fully present',s:'homework · dinner · wrestling · prayer'});
   c.push({k:'jo',t:"Jo's routine held exactly as agreed",s:'shared routine — no improvising',shared:true});
   c.push({k:'lights',t:'Lights out 21:30',s:'after wind-down with Janie'});
   return c;
@@ -511,10 +546,15 @@ function render(){
   const done=Object.keys(S.days).filter(d=>{const s=dayScore(d);return s.n>0&&s.n===s.of}).length;
   $('progBar').style.width=Math.min(100,done/84*100)+'%';
 
-  const dow=parse(cur).getDay(),p=PLAN[dow];
+  const dow=parse(cur).getDay(),p=PLAN[dow],ss=session(cur);
   $('dayName').textContent=DN[dow];
   $('dayMeta').textContent=cur+(p.n?' · '+p.n:'');
-  $('trainWhat').textContent=p.t;$('trainWhen').textContent=p.w;
+  $('trainWhat').textContent=ss.t;$('trainWhen').textContent=ss.w;
+  $('trainFlag').hidden=!ss.over;
+  $('trainBar').setAttribute('aria-label',
+    'Session: '+ss.t+', '+ss.w+'. Change it for this day only.');
+  $('sessEdit').hidden=editing!==cur;
+  $('trainBar').setAttribute('aria-expanded',editing===cur?'true':'false');
   $('next').disabled = cur>=iso(new Date());
 
   const rec=S.days[cur]||{},box=$('checks');box.innerHTML='';
@@ -704,6 +744,34 @@ $('joGood').onclick=()=>{
 $('joBad').onclick=()=>{S.jo.log[cur]=0;toast('Logged. Same rung tomorrow — no penalty.');save();render()};
 $('startDate').onchange=e=>{S.start=e.target.value;save();render()};
 $('height').onchange=e=>{S.height=num(e.target.value);save();render()};
+
+function openEditor(){
+  const ss=session(cur);
+  editing=cur;$('sessName').value=ss.t;$('sessTime').value=ss.w;
+  render();$('sessName').focus();
+}
+function closeEditor(){editing=null;render()}
+function saveSession(){
+  const p=PLAN[parse(cur).getDay()];
+  const t=$('sessName').value.trim(),w=$('sessTime').value.trim();
+  S.days[cur]=S.days[cur]||{};
+  // Matching the pattern is not an override — drop it rather than store a copy.
+  if((!t||t===p.t)&&(!w||w===p.w)){delete S.days[cur].session;toast('Back to the usual pattern')}
+  else{S.days[cur].session={t:t,w:w};toast('Session changed for this day')}
+  editing=null;save();render();
+}
+function resetSession(){
+  if(S.days[cur]&&S.days[cur].session){delete S.days[cur].session;toast('Back to the usual pattern')}
+  editing=null;save();render();
+}
+$('trainBar').onclick=()=>{editing===cur?closeEditor():openEditor()};
+$('trainBar').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();
+  editing===cur?closeEditor():openEditor()}};
+$('sessSave').onclick=saveSession;
+$('sessReset').onclick=resetSession;
+$('sessCancel').onclick=closeEditor;
+$('sessTime').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();saveSession()}};
+$('sessName').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();saveSession()}};
 
 $('exp').onclick=()=>{
   const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});

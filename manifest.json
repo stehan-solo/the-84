@@ -2,7 +2,6 @@
   "name": "The 84 — 12-Week Accountability Tracker",
   "short_name": "The 84",
   "description": "Personal 12-week accountability tracker — daily habits, training, and body metrics.",
-  "id": "/",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
