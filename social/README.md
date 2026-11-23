@@ -25,7 +25,7 @@ A red *Social publish* run is how you find out, so turn on GitHub's failed-workf
 1. Go to **linkedin.com/developers** → **Create app**. LinkedIn requires a company page for every app; your own page is fine.
 2. On the app's **Products** tab, add **Share on LinkedIn** and **Sign In with LinkedIn using OpenID Connect**. Both are free and approved instantly.
 3. Open **Docs and tools → OAuth Token Tools → Create token**. Tick `openid`, `profile` and `w_member_social`, then copy the access token.
-4. Find your member ID. Ask Claude in any session to look it up with that token, or call `https://api.linkedin.com/v2/userinfo` with it; the `sub` value is your ID.
+4. Find your member ID: ask Claude to look it up. It will show you a secure form for the token, so **never paste the token into a chat**. (Technical route: call `https://api.linkedin.com/v2/userinfo` with the token; the `sub` value is your ID.)
 5. In this GitHub repo, go to **Settings → Secrets and variables → Actions → New repository secret** and add:
    - `LINKEDIN_TOKEN`: the access token
    - `LINKEDIN_AUTHOR_URN`: `urn:li:person:` followed by your ID
