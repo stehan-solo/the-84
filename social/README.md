@@ -1,39 +1,48 @@
 # Social posting agent
 
-You give it topics. It drafts posts for each platform in your voice and opens a PR. **Nothing is posted until you merge the PR.**
+You give it topics. Every morning Claude drafts posts in your voice. **Nothing is posted until you approve it.**
 
-```
-social/topics.md  ──(daily routine: Claude drafts)──▶  PR with social/queue/*.md
-                                                              │  you review, edit, merge
-                                                              ▼
-              social/posted/*.md  ◀──(GitHub Action publishes)──  main
-```
+| Platforms | Where the draft goes | How you approve |
+|---|---|---|
+| Facebook, Instagram, YouTube, TikTok | A **draft in Metricool** | Open it in the Metricool app, check it, tap Schedule or Publish |
+| LinkedIn | A **"Social drafts" PR** on GitHub | Tap **Merge pull request**. The *Social publish* Action posts it within minutes |
+
+The PR opens every morning there's a new topic, even with no LinkedIn post, because merging it is also what marks the topics as done.
+Its description links to each Metricool draft.
 
 ## Day to day
 
-1. **Add a topic.** Edit `social/topics.md` on GitHub (works on the phone app) and add a bullet under `## Inbox` with your notes.
-   Or open a Claude Code session on this repo and say "/social-draft <topic>".
-2. **Review.** The daily routine opens a PR named *Social drafts: …*. Its description shows every post.
-   Edit text on the PR's Files tab, delete a `## platform` section to skip that platform, or delete the file to skip the post.
-3. **Merge to approve.** The *Social publish* Action posts everything due within a few minutes.
-   Posts with a `schedule:` wait for that time; the Action checks hourly.
-   Each post file gets `posted.<platform>: <url>` lines and moves to `social/posted/`.
+1. **Add a topic.** Edit `social/topics.md` on GitHub (the phone app works) and add a bullet under `## Inbox` with your notes.
+   Instagram, TikTok and YouTube need a public image or video link: add `[image_url: …]` or `[video_url: …]`.
+2. **Next morning, review.** Open the *Social drafts* PR. Use its Metricool links to publish those drafts, then merge the PR for LinkedIn.
+3. **To skip a post,** delete the draft in Metricool, or delete the LinkedIn file in the PR before merging.
 
-If a platform fails, the others still post. The failure is recorded as `error.<platform>` in the file and retried on the next hourly run, up to 3 attempts. After that the file moves to `social/failed/`.
+If LinkedIn posting fails, the failure is recorded as `error.linkedin` in the post's file and retried on the next hourly run, up to 3 attempts. After that the file moves to `social/failed/`.
 A red *Social publish* run is how you find out, so turn on GitHub's failed-workflow notifications.
 
-To fix a post that's already merged but not yet out, edit it in `social/queue/` on main. Add `hold: yes` to pause it.
+## LinkedIn setup (once, about 15 minutes)
+
+1. Go to **linkedin.com/developers** → **Create app**. LinkedIn requires a company page for every app; your own page is fine.
+2. On the app's **Products** tab, add **Share on LinkedIn** and **Sign In with LinkedIn using OpenID Connect**. Both are free and approved instantly.
+3. Open **Docs and tools → OAuth Token Tools → Create token**. Tick `openid`, `profile` and `w_member_social`, then copy the access token.
+4. Find your member ID. Ask Claude in any session to look it up with that token, or call `https://api.linkedin.com/v2/userinfo` with it; the `sub` value is your ID.
+5. In this GitHub repo, go to **Settings → Secrets and variables → Actions → New repository secret** and add:
+   - `LINKEDIN_TOKEN`: the access token
+   - `LINKEDIN_AUTHOR_URN`: `urn:li:person:` followed by your ID
+6. **The token expires after 60 days.** Set a reminder, repeat step 3, and update `LINKEDIN_TOKEN`.
+
+This posts as you personally. Posting as a company page needs LinkedIn's Community Management API, which needs approval.
 
 ## Setup
 
 1. Fill in `social/profile.md`: who you are, your voice, a few example posts, and which platforms to use.
-2. Add secrets for each platform you keep, under **Settings → Secrets and variables → Actions** on this repo.
+2. For platforms that post directly, add their secrets, under **Settings → Secrets and variables → Actions** on this repo.
 3. **Settings → Actions → General → Workflow permissions** must allow *Read and write*, so the Action can record what it posted.
 4. Recommended: protect `main` so changes need a PR. This keeps the drafting routine from ever reaching main without you.
 
 Run `python3 social/publish.py --dry-run` locally to see what would post. Run `python3 -m unittest social/test_publish.py` for the tests.
 
-### Secrets by platform
+### Secrets for other direct platforms (optional)
 
 | platform | secrets | where to get them |
 |---|---|---|
