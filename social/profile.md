@@ -25,7 +25,10 @@ Available but switched off: bluesky, mastodon, x, threads, google_business. To s
 
 ## Who I am
 
-<!-- One or two lines: who's posting, what you do, where. -->
+Super Art Boys: SteHan + Jo. Live caricature entertainment at weddings, milestone birthdays, corporate events and year-end functions. We also make personalised caricature gifts, delivered as print-ready files.
+Bookings: SuperArtBoys.com. Packages start at two hours.
+We write in English with the odd Afrikaans touch, warm and playful, with an emoji or two.
+<!-- Learned from sent emails, Nov 2026. Correct anything that's out of date. -->
 
 ## Audience
 
