@@ -4,21 +4,31 @@ The drafting agent reads this file every run. Edit it to change how you sound an
 
 ## Platforms
 
-Draft for these platforms only. Delete a line to stop drafting for it. Each needs its secrets set up first (see social/README.md).
+Draft for these platforms only. Delete a line to stop drafting for it.
 
-- bluesky
-- mastodon
-- x
-- linkedin
-- threads
-- instagram
+Through Metricool: these are saved as **drafts in Metricool**, and you publish them from the Metricool app.
 - facebook
+- instagram
 - youtube
-- google_business
+- tiktok
+
+Directly: these go in the daily "Social drafts" PR, and merging it publishes them. Each needs its secrets set up first (see social/README.md).
+- linkedin
+
+Available but switched off: bluesky, mastodon, x, threads, google_business. To switch one on, add it under "Directly".
+
+## Metricool
+
+- brand: Super Art Boys
+- blogId: 5782894
+- timezone: Africa/Johannesburg
 
 ## Who I am
 
-<!-- One or two lines: who's posting, what you do, where. -->
+Super Art Boys: SteHan + Jo. Live caricature entertainment at weddings, milestone birthdays, corporate events and year-end functions. We also make personalised caricature gifts, delivered as print-ready files.
+Bookings: SuperArtBoys.com. Packages start at two hours.
+We write in English with the odd Afrikaans touch, warm and playful, with an emoji or two.
+<!-- Learned from sent emails, Nov 2026. Correct anything that's out of date. -->
 
 ## Audience
 
